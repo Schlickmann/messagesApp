@@ -8,16 +8,19 @@ function screen() {
     if (screenW < screenH) {
         return screenW;
     } 
-        return screenH;
+        return screenH;    
 }
 
-const FormLogin = props => (
-
+const FormRegister = props => (
     <View style={styles.container}>
-        <View style={styles.headerView}>
-            <Text style={styles.txtHeader}>Messages App</Text>      
-        </View>
         <View style={styles.inputView}>
+            <TextInput 
+                style={styles.input}
+                placeholder='Name...'
+                placeholderTextColor='#ADD8E6' 
+                underlineColorAndroid='transparent'
+                autoCorrect={false}
+            />
             <TextInput 
                 style={styles.input}
                 placeholder='Email...'
@@ -35,40 +38,30 @@ const FormLogin = props => (
                 autoCapitalize='none'
                 secureTextEntry={true} 
             />
-            <Text style={styles.txtRegister}>
-                If you are not registered yet, register yourself here.
-            </Text>
         </View>
         <View style={styles.footerView}>
-            <TouchableOpacity
-                onPress={(ret) => { console.log(ret); }}
-            >
-                <View style={styles.btnLogin}>
-                    <Text style={styles.txtLogin}>Login</Text>
-                </View>
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+            onPress={(ret) => { console.log(ret); }}
+        >
+            <View style={styles.btnRegister}>
+                <Text style={styles.txtRegister}>Register</Text>
+            </View>
+        </TouchableOpacity>
+    </View>
     </View>
 );
 
 const styles = {
     container: {
         flex: 1,
-        justifyContent: 'center',
-    },
-    headerView: {
-        flex: 1,
+        padding: 10,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    txtHeader: {
-        fontSize: 40,
-        color: '#4682B4', //SteelBlue
-        fontFamily: 'Noteworthy',
     },
     inputView: {
-        flex: 2,
+        flex: 4,
         alignItems: 'center',
+        justifyContent: 'center',
     },
     input: {
         fontSize: 20,
@@ -80,16 +73,11 @@ const styles = {
         margin: 10,
         padding: 5, 
     },
-    txtRegister: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        color: '#4682B4',
-    },
     footerView: {
         flex: 1,
         alignItems: 'center'
     },
-    btnLogin: {
+    btnRegister: {
         justifyContent: 'center',
         alignItems: 'center',
         height: 50,
@@ -98,10 +86,10 @@ const styles = {
         borderColor: '#4682B4',
         borderRadius: 8,
     },
-    txtLogin: {
+    txtRegister: {
         fontSize: 25,
         color: '#4682B4', 
     }
 };
 
-export { FormLogin };
+export { FormRegister };

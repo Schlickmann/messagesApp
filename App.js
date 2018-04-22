@@ -3,13 +3,14 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { FormLogin } from './src/components/FormLogin';
+//import { FormLogin } from './src/components/FormLogin';
+import { FormRegister } from './src/components/FormRegister';
 
 export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <FormLogin />
+        <FormRegister />
       </View>
     );
   }
