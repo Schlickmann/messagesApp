@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Text
 } from 'react-native';
+import { FormLogin } from './src/components/FormLogin';
 
 export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Juliani</Text>
+        <FormLogin />
       </View>
     );
   }
@@ -18,8 +18,6 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#F0F8FF', //AliceBlue
   },
 });
