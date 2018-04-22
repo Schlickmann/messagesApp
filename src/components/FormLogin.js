@@ -46,12 +46,12 @@ const FormLogin = props => (
 const styles = {
     container: {
         flex: 1,
-        marginTop: 20,
-        alignItems: 'center'
+        padding: 10,
     },
     headerView: {
-        flex: 2,
+        flex: 1,
         justifyContent: 'center',
+        alignItems: 'center',
     },
     txtHeader: {
         fontSize: 40,
@@ -59,7 +59,7 @@ const styles = {
         fontFamily: 'Noteworthy',
     },
     inputView: {
-        flex: 4,
+        flex: 2,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -79,7 +79,7 @@ const styles = {
         color: '#4682B4',
     },
     footerView: {
-        flex: 3,
+        flex: 2,
         width: screen,
         alignItems: 'center'
     },
