@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import { connect } from 'react-redux';
+import { modifyEmail, modifyPassword } from '../actions/AuthActions';
 
 const screenW = Dimensions.get('screen').width;
 const screenH = Dimensions.get('screen').height;
@@ -11,45 +13,63 @@ function screen() {
         return screenH;
 }
 
-const FormLogin = props => (
-
-    <View style={styles.container}>
-        <View style={styles.headerView}>
-            <Text style={styles.txtHeader}>Messages App</Text>      
+class FormLogin extends Component {
+    static navigationOptions = {
+        headerStyle: { backgroundColor: '#4682B4', 
+                        height: 5,
+                     }
+    };
+    
+    render() {
+        const { navigate } = this.props.navigation;
+        return (
+            <View style={styles.container}>
+            <View style={styles.headerView}>
+                <Text style={styles.txtHeader}>Messages App</Text>      
+            </View>
+            <View style={styles.inputView}>
+                <TextInput 
+                    style={styles.input}
+                    placeholder='Email...'
+                    placeholderTextColor='#ADD8E6' 
+                    underlineColorAndroid='transparent'
+                    autoCorrect={false}
+                    autoCapitalize='none'
+                    value={this.props.email}
+                    onChangeText={(text) => { this.props.modifyEmail(text); }}
+                />
+                <TextInput 
+                    style={styles.input}
+                    placeholder='Password...'
+                    placeholderTextColor='#ADD8E6' 
+                    underlineColorAndroid='transparent'
+                    autoCorrect={false}
+                    autoCapitalize='none'
+                    secureTextEntry={true}
+                    value={this.props.password} 
+                    onChangeText={text => { this.props.modifyPassword(text); }}
+                />
+                <TouchableOpacity
+                    onPress={() => navigate('register')}
+                >
+                    <Text style={styles.txtRegister}>
+                        If you are not registered yet, register yourself here.
+                    </Text>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.footerView}>
+                <TouchableOpacity
+                    onPress={(ret) => { console.log(ret); }}
+                >
+                    <View style={styles.btnLogin}>
+                        <Text style={styles.txtLogin}>Login</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
         </View>
-        <View style={styles.inputView}>
-            <TextInput 
-                style={styles.input}
-                placeholder='Email...'
-                placeholderTextColor='#ADD8E6' 
-                underlineColorAndroid='transparent'
-                autoCorrect={false}
-                autoCapitalize='none'
-            />
-            <TextInput 
-                style={styles.input}
-                placeholder='Password...'
-                placeholderTextColor='#ADD8E6' 
-                underlineColorAndroid='transparent'
-                autoCorrect={false}
-                autoCapitalize='none'
-                secureTextEntry={true} 
-            />
-            <Text style={styles.txtRegister}>
-                If you are not registered yet, register yourself here.
-            </Text>
-        </View>
-        <View style={styles.footerView}>
-            <TouchableOpacity
-                onPress={(ret) => { console.log(ret); }}
-            >
-                <View style={styles.btnLogin}>
-                    <Text style={styles.txtLogin}>Login</Text>
-                </View>
-            </TouchableOpacity>
-        </View>
-    </View>
-);
+        );
+    }
+}
 
 const styles = {
     container: {
@@ -84,6 +104,7 @@ const styles = {
         fontSize: 14,
         fontWeight: 'bold',
         color: '#4682B4',
+        textDecorationLine: 'underline'
     },
     footerView: {
         flex: 1,
@@ -104,4 +125,11 @@ const styles = {
     }
 };
 
-export { FormLogin };
+const mapStateToProps = state => (
+    {
+        email: state.Auth.email,
+        password: state.Auth.password
+    }
+);
+
+export default connect(mapStateToProps, { modifyEmail, modifyPassword })(FormLogin);
