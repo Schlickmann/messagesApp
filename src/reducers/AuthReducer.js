@@ -1,7 +1,8 @@
 const INITIAL_STATE = {
     name: '',
     email: '',
-    password: ''
+    password: '',
+    errorRegister: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -16,7 +17,13 @@ export default (state = INITIAL_STATE, action) => {
             break;
         case 'modify_name':
             lRet = { ...state, name: action.payload };
-            break;    
+            break;
+        case 'register_user_error':
+            lRet = { ...state, errorRegister: action.payload };
+            break;
+        case 'register_user_success':
+            lRet = { ...state, name: '', password: '', errorRegister: '' };
+            break;      
         default:
             lRet = { ...state };
             break;

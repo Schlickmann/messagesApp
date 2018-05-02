@@ -17,56 +17,57 @@ class FormLogin extends Component {
     static navigationOptions = {
         headerStyle: { backgroundColor: '#4682B4', 
                         height: 5,
-                     }
+                     },
+        headerLeft: null,
     };
     
     render() {
         const { navigate } = this.props.navigation;
         return (
-            <View style={styles.container}>
-            <View style={styles.headerView}>
-                <Text style={styles.txtHeader}>Messages App</Text>      
-            </View>
-            <View style={styles.inputView}>
-                <TextInput 
-                    style={styles.input}
-                    placeholder='Email...'
-                    placeholderTextColor='#ADD8E6' 
-                    underlineColorAndroid='transparent'
-                    autoCorrect={false}
-                    autoCapitalize='none'
-                    value={this.props.email}
-                    onChangeText={(text) => { this.props.modifyEmail(text); }}
-                />
-                <TextInput 
-                    style={styles.input}
-                    placeholder='Password...'
-                    placeholderTextColor='#ADD8E6' 
-                    underlineColorAndroid='transparent'
-                    autoCorrect={false}
-                    autoCapitalize='none'
-                    secureTextEntry={true}
-                    value={this.props.password} 
-                    onChangeText={text => { this.props.modifyPassword(text); }}
-                />
-                <TouchableOpacity
-                    onPress={() => navigate('register')}
-                >
-                    <Text style={styles.txtRegister}>
-                        If you are not registered yet, register yourself here.
-                    </Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.footerView}>
-                <TouchableOpacity
-                    onPress={(ret) => { console.log(ret); }}
-                >
-                    <View style={styles.btnLogin}>
-                        <Text style={styles.txtLogin}>Login</Text>
+                <View style={styles.container}>
+                    <View style={styles.headerView}>
+                        <Text style={styles.txtHeader}>Messages App</Text>      
                     </View>
-                </TouchableOpacity>
-            </View>
-        </View>
+                    <View style={styles.inputView}>
+                        <TextInput 
+                            style={styles.input}
+                            placeholder='Email...'
+                            placeholderTextColor='#ADD8E6' 
+                            underlineColorAndroid='transparent'
+                            autoCorrect={false}
+                            autoCapitalize='none'
+                            value={this.props.email}
+                            onChangeText={(text) => { this.props.modifyEmail(text); }}
+                        />
+                        <TextInput 
+                            style={styles.input}
+                            placeholder='Password...'
+                            placeholderTextColor='#ADD8E6' 
+                            underlineColorAndroid='transparent'
+                            autoCorrect={false}
+                            autoCapitalize='none'
+                            secureTextEntry={true}
+                            value={this.props.password} 
+                            onChangeText={text => { this.props.modifyPassword(text); }}
+                        />
+                        <TouchableOpacity
+                            onPress={() => navigate('register')}
+                        >
+                            <Text style={styles.txtRegister}>
+                                If you are not registered yet, register yourself here.
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.footerView}>
+                        <TouchableOpacity
+                            onPress={(ret) => { console.log(ret); }}
+                        >
+                            <View style={styles.btnLogin}>
+                                <Text style={styles.txtLogin}>Login</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
         );
     }
 }
@@ -85,6 +86,7 @@ const styles = {
         fontSize: 40,
         color: '#4682B4', //SteelBlue
         fontFamily: 'Noteworthy',
+        backgroundColor: 'transparent'
     },
     inputView: {
         flex: 2,

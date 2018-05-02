@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ScrollView, View, Text, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import { modifyEmail, modifyPassword, modifyName } from '../actions/AuthActions';
+import { modifyEmail, modifyPassword, modifyName, registerUser } from '../actions/AuthActions';
 
 const screenW = Dimensions.get('screen').width;
 const screenH = Dimensions.get('screen').height;
@@ -17,11 +17,20 @@ class FormRegister extends Component {
 
     static navigationOptions = {
         headerTitle: 'Register',
+        headerTintColor: 'white',
         headerTitleStyle: { fontSize: 25, color: '#ADD8E6', fontFamily: 'Noteworthy' },
         headerStyle: { backgroundColor: '#4682B4', 
                         height: 60,
                      }
     };
+
+    _registerUser() {
+        const { navigate } = this.props.navigation;
+        //destruct in assignment
+        const { name, email, password } = this.props;
+
+        this.props.registerUser({ name, email, password, navigate });
+    }
 
     render() {
         return (
@@ -60,10 +69,12 @@ class FormRegister extends Component {
                     autoCapitalize='none'
                     secureTextEntry={true}
                 />
+
+                <Text style={styles.errorRegister}>{this.props.errorRegister}</Text>
             </View>
             <View style={styles.footerView}>
             <TouchableOpacity
-                onPress={(ret) => { console.log(ret); }}
+                onPress={() => { this._registerUser(); }}
             >
                 <View style={styles.btnRegister}>
                     <Text style={styles.txtRegister}>Register</Text>
@@ -105,6 +116,12 @@ const styles = {
         flex: 1,
         alignItems: 'center',
     },
+    errorRegister: {
+        color: '#ff0000',
+        fontSize: 18,
+        fontFamily: 'Verdana',
+        alignSelf: 'center'
+    },
     btnRegister: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -125,8 +142,9 @@ const mapStateToProps = state => (
     {
         name: state.Auth.name,
         email: state.Auth.email,
-        password: state.Auth.password
+        password: state.Auth.password,
+        errorRegister: state.Auth.errorRegister
     }
 );
 
-export default connect(mapStateToProps, { modifyEmail, modifyPassword, modifyName })(FormRegister);
+export default connect(mapStateToProps, { modifyEmail, modifyPassword, modifyName, registerUser })(FormRegister);
