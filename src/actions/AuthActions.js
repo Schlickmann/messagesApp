@@ -1,23 +1,28 @@
 import firebase from 'firebase';
 import b64 from 'base-64';
+import { MODIFY_EMAIL, MODIFY_PASSWORD, MODIFY_NAME, 
+        REGISTER_USER_SUCCESS, REGISTER_USER_FAILED, 
+        AUTH_USER_SUCCESS, AUTH_USER_FAILED, WAITING_LOGIN } from './types';
 
 export const modifyEmail = (text) => ({
-        type: 'modify_email',
+        type: MODIFY_EMAIL,
         payload: text
     });
 
 export const modifyPassword = (text) => ({
-    type: 'modify_password',
+    type: MODIFY_PASSWORD,
     payload: text
 });
 
 export const modifyName = (text) => ({
-    type: 'modify_name',
+    type: MODIFY_NAME,
     payload: text
 });
 
-export const registerUser = ({ name, email, password, navigate }) => {
-    return (dispatch) => {
+export const registerUser = ({ name, email, password, navigate }) => 
+    //template string `exemplo ${variavel}`
+     (dispatch) => {
+        dispatch({ type: WAITING_LOGIN });
         firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(email, password)
             .then(user => {
                     const emailB64 = b64.encode(email);
@@ -26,13 +31,11 @@ export const registerUser = ({ name, email, password, navigate }) => {
                         .then(value => registerUserSuccess(dispatch, navigate));
             })
             .catch(err => registerUserFailed(err, dispatch));
-    };
-};
-   
+}; 
 
 const registerUserSuccess = (dispatch, navigate) => {
     dispatch({
-            type: '', // return literal object (action) 
+            type: REGISTER_USER_SUCCESS, // return literal object (action) 
     });
 
     navigate('welcome');
@@ -40,7 +43,30 @@ const registerUserSuccess = (dispatch, navigate) => {
 
 const registerUserFailed = (error, dispatch) => {
     dispatch({
-        type: 'register_user_error',
+        type: REGISTER_USER_FAILED,
         payload: error.message
+    });
+};
+
+export const authUser = ({ email, password, navigate }) => (dispatch) => {
+    dispatch({ type: WAITING_LOGIN });
+
+        firebase.auth().signInWithEmailAndPassword(email, password)
+            .then(user => authUserSuccess(dispatch, navigate))
+            .catch(err => authUserFailed(dispatch, err));
+    };
+
+const authUserSuccess = (dispatch, navigate) => {
+    dispatch({
+        type: AUTH_USER_SUCCESS
+    });
+
+    navigate('tabPage');
+};
+
+const authUserFailed = (dispatch, erro) => {
+    dispatch({
+        type: AUTH_USER_FAILED,
+        payload: erro.message
     });
 };

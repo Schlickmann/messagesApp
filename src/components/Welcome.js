@@ -14,11 +14,12 @@ function screen() {
 export default class Welcome extends Component {
     
     static navigationOptions = {
-        headerTintColor: 'white',
+        //headerTintColor: 'white',
         headerStyle: { backgroundColor: '#4682B4', 
-                        height: 30,
+                        height: 5,
                      },
-        headerTitleStyle: { color: 'white' }
+        //headerTitleStyle: { color: 'white' }
+        headerLeft: null,
     };
 
     render() {

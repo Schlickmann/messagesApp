@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import { ScrollView, View, Text, TextInput, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import { modifyEmail, modifyPassword, modifyName, registerUser } from '../actions/AuthActions';
 
@@ -30,6 +30,26 @@ class FormRegister extends Component {
         const { name, email, password } = this.props;
 
         this.props.registerUser({ name, email, password, navigate });
+    }
+
+    renderButton() {
+        if (this.props.loadingLogin) {
+            return (
+                <ActivityIndicator size='large' />
+            );
+        }
+
+        return (
+                <View>
+                    <TouchableOpacity
+                        onPress={() => { this._registerUser(); }}
+                    >
+                     <View style={styles.btnRegister}>
+                         <Text style={styles.txtRegister}>Register</Text>
+                     </View>
+                    </TouchableOpacity>
+                </View>
+        );
     }
 
     render() {
@@ -73,14 +93,8 @@ class FormRegister extends Component {
                 <Text style={styles.errorRegister}>{this.props.errorRegister}</Text>
             </View>
             <View style={styles.footerView}>
-            <TouchableOpacity
-                onPress={() => { this._registerUser(); }}
-            >
-                <View style={styles.btnRegister}>
-                    <Text style={styles.txtRegister}>Register</Text>
-                </View>
-            </TouchableOpacity>
-        </View>
+                {this.renderButton()}
+            </View>
         </ScrollView>
         );
     }
@@ -143,7 +157,8 @@ const mapStateToProps = state => (
         name: state.Auth.name,
         email: state.Auth.email,
         password: state.Auth.password,
-        errorRegister: state.Auth.errorRegister
+        errorRegister: state.Auth.errorRegister,
+        loadingLogin: state.Auth.loadingLogin
     }
 );
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import { modifyEmail, modifyPassword } from '../actions/AuthActions';
+import { modifyEmail, modifyPassword, authUser } from '../actions/AuthActions';
 
 const screenW = Dimensions.get('screen').width;
 const screenH = Dimensions.get('screen').height;
@@ -14,12 +14,41 @@ function screen() {
 }
 
 class FormLogin extends Component {
+    
     static navigationOptions = {
         headerStyle: { backgroundColor: '#4682B4', 
                         height: 5,
                      },
         headerLeft: null,
     };
+
+    _authUser() {
+        const { navigate } = this.props.navigation;
+        //destruct in assignment
+        const { email, password } = this.props;
+
+        this.props.authUser({ email, password, navigate });
+    }
+
+    renderButton() {
+        if (this.props.loadingLogin) {
+            return (
+                <ActivityIndicator size='large' />
+            );
+        }
+
+        return (
+                <View>
+                    <TouchableOpacity
+                        onPress={() => { this._authUser(); }}
+                    >
+                        <View style={styles.btnLogin}>
+                            <Text style={styles.txtLogin}>Login</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+        );
+    }
     
     render() {
         const { navigate } = this.props.navigation;
@@ -57,15 +86,11 @@ class FormLogin extends Component {
                                 If you are not registered yet, register yourself here.
                             </Text>
                         </TouchableOpacity>
+
+                        <Text style={styles.errorAuth}>{this.props.errorAuth}</Text>
                     </View>
                     <View style={styles.footerView}>
-                        <TouchableOpacity
-                            onPress={(ret) => { console.log(ret); }}
-                        >
-                            <View style={styles.btnLogin}>
-                                <Text style={styles.txtLogin}>Login</Text>
-                            </View>
-                        </TouchableOpacity>
+                        {this.renderButton()}
                     </View>
                 </View>
         );
@@ -108,6 +133,13 @@ const styles = {
         color: '#4682B4',
         textDecorationLine: 'underline'
     },
+    errorAuth: {
+        color: '#ff0000',
+        fontSize: 18,
+        fontFamily: 'Verdana',
+        alignSelf: 'center',
+        marginTop: 30,
+    },
     footerView: {
         flex: 1,
         alignItems: 'center'
@@ -130,8 +162,10 @@ const styles = {
 const mapStateToProps = state => (
     {
         email: state.Auth.email,
-        password: state.Auth.password
+        password: state.Auth.password,
+        errorAuth: state.Auth.errorAuth,
+        loadingLogin: state.Auth.loadingLogin
     }
 );
 
-export default connect(mapStateToProps, { modifyEmail, modifyPassword })(FormLogin);
+export default connect(mapStateToProps, { modifyEmail, modifyPassword, authUser })(FormLogin);
