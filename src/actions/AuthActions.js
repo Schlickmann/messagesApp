@@ -2,7 +2,8 @@ import firebase from 'firebase';
 import b64 from 'base-64';
 import { MODIFY_EMAIL, MODIFY_PASSWORD, MODIFY_NAME, 
         REGISTER_USER_SUCCESS, REGISTER_USER_FAILED, 
-        AUTH_USER_SUCCESS, AUTH_USER_FAILED, WAITING_LOGIN } from './types';
+        AUTH_USER_SUCCESS, AUTH_USER_FAILED, WAITING_LOGIN,
+        PENDING_EMAIL_VERIFICATION } from './types';
 
 export const modifyEmail = (text) => ({
         type: MODIFY_EMAIL,
@@ -23,13 +24,15 @@ export const registerUser = ({ name, email, password, navigate }) =>
     //template string `exemplo ${variavel}`
      (dispatch) => {
         dispatch({ type: WAITING_LOGIN });
-        firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(email, password)
-            .then(user => {
-                    const emailB64 = b64.encode(email);
-                    
-                    firebase.database().ref(`/contatos/${emailB64}`).push({ name })
-                        .then(value => registerUserSuccess(dispatch, navigate));
-            })
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then(currentUser => {
+                currentUser.sendEmailVerification().then(user => {
+                const emailB64 = b64.encode(email);
+                
+                firebase.database().ref(`/contatos/${emailB64}`).push({ name })
+                    .then(value => registerUserSuccess(dispatch, navigate));
+            }).catch(err => { console.log(err); }); 
+        })
             .catch(err => registerUserFailed(err, dispatch));
 }; 
 
@@ -50,10 +53,15 @@ const registerUserFailed = (error, dispatch) => {
 
 export const authUser = ({ email, password, navigate }) => (dispatch) => {
     dispatch({ type: WAITING_LOGIN });
-
-        firebase.auth().signInWithEmailAndPassword(email, password)
-            .then(user => authUserSuccess(dispatch, navigate))
-            .catch(err => authUserFailed(dispatch, err));
+    firebase.auth().onAuthStateChanged((user) => { 
+        if (user.emailVerified) {
+          firebase.auth().signInWithEmailAndPassword(email, password)
+          .then(user => authUserSuccess(dispatch, navigate))
+          .catch(err => authUserFailed(dispatch, err));
+        } else {
+          pendingEmailVerification(dispatch);
+        }
+      });  
     };
 
 const authUserSuccess = (dispatch, navigate) => {
@@ -68,5 +76,13 @@ const authUserFailed = (dispatch, erro) => {
     dispatch({
         type: AUTH_USER_FAILED,
         payload: erro.message
+    });
+};
+
+const pendingEmailVerification = (dispatch) => {
+    dispatch({
+        type: PENDING_EMAIL_VERIFICATION,
+        payload: 'The email entered in the registration has not yet been validated.'
+                    + 'Please check your email box.'
     });
 };

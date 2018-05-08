@@ -16,9 +16,7 @@ function screen() {
 class FormLogin extends Component {
     
     static navigationOptions = {
-        headerStyle: { backgroundColor: '#4682B4', 
-                        height: 5,
-                     },
+        headerStyle: { height: 5, backgroundColor: '#4682B4', },
         headerLeft: null,
     };
 
@@ -139,6 +137,7 @@ const styles = {
         fontFamily: 'Verdana',
         alignSelf: 'center',
         marginTop: 30,
+        padding: 10,
     },
     footerView: {
         flex: 1,

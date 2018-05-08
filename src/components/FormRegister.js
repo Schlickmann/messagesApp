@@ -17,11 +17,9 @@ class FormRegister extends Component {
 
     static navigationOptions = {
         headerTitle: 'Register',
-        headerTintColor: 'white',
+        headerTintColor: '#ADD8E6',
         headerTitleStyle: { fontSize: 25, color: '#ADD8E6', fontFamily: 'Noteworthy' },
-        headerStyle: { backgroundColor: '#4682B4', 
-                        height: 60,
-                     }
+        headerStyle: { height: 60, backgroundColor: '#4682B4', }
     };
 
     _registerUser() {
@@ -134,7 +132,8 @@ const styles = {
         color: '#ff0000',
         fontSize: 18,
         fontFamily: 'Verdana',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        padding: 10,
     },
     btnRegister: {
         justifyContent: 'center',

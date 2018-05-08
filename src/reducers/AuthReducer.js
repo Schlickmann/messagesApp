@@ -1,6 +1,7 @@
 import { MODIFY_EMAIL, MODIFY_PASSWORD, MODIFY_NAME, 
     REGISTER_USER_SUCCESS, REGISTER_USER_FAILED, 
-    AUTH_USER_SUCCESS, AUTH_USER_FAILED, WAITING_LOGIN } from '../actions/types';
+    AUTH_USER_SUCCESS, AUTH_USER_FAILED, WAITING_LOGIN,
+    PENDING_EMAIL_VERIFICATION } from '../actions/types';
 
 const INITIAL_STATE = {
     name: '',
@@ -38,7 +39,10 @@ export default (state = INITIAL_STATE, action) => {
             break;
         case WAITING_LOGIN:
             lRet = { ...state, loadingLogin: true };
-            break;        
+            break;
+        case PENDING_EMAIL_VERIFICATION:
+            lRet = { ...state, errorAuth: action.payload, password: '', loadingLogin: false };
+            break;         
         default:
             lRet = { ...state };
             break;
