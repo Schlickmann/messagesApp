@@ -14,7 +14,6 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
     let lRet = {};
-    console.log(action);
     switch (action.type) {
         case MODIFY_EMAIL:
             lRet = { ...state, email: action.payload };

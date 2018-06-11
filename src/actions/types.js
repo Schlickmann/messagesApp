@@ -7,3 +7,7 @@ export const AUTH_USER_SUCCESS = 'auth_user_success';
 export const AUTH_USER_FAILED = 'auth_user_failed';
 export const WAITING_LOGIN = 'waiting_login';
 export const PENDING_EMAIL_VERIFICATION = 'pending_email_verification';
+export const MODIFY_EMAIL_NEW_CONTACT = 'modify_email_new_contact';
+export const ADD_CONTACT_SUCCESS = 'add_contact_success';
+export const ADD_CONTACT_FAILED = 'add_contact_failed';
+export const WAITING = 'waiting';

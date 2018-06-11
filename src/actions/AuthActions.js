@@ -29,7 +29,7 @@ export const registerUser = ({ name, email, password, navigate }) =>
                 currentUser.sendEmailVerification().then(user => {
                 const emailB64 = b64.encode(email);
                 
-                firebase.database().ref(`/contatos/${emailB64}`).push({ name })
+                firebase.database().ref(`/contacts/${emailB64}`).push({ name })
                     .then(value => registerUserSuccess(dispatch, navigate));
             }).catch(err => { console.log(err); }); 
         })
@@ -53,15 +53,18 @@ const registerUserFailed = (error, dispatch) => {
 
 export const authUser = ({ email, password, navigate }) => (dispatch) => {
     dispatch({ type: WAITING_LOGIN });
-    firebase.auth().onAuthStateChanged((user) => { 
-        if (user.emailVerified) {
-          firebase.auth().signInWithEmailAndPassword(email, password)
-          .then(user => authUserSuccess(dispatch, navigate))
-          .catch(err => authUserFailed(dispatch, err));
-        } else {
-          pendingEmailVerification(dispatch);
-        }
-      });  
+    firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(user => {
+            if (user) {
+                user.reload();
+                if (user.emailVerified) {
+                    authUserSuccess(dispatch, navigate);     
+                } else {
+                    pendingEmailVerification(dispatch);
+                }
+            }
+        })
+        .catch(err => authUserFailed(dispatch, err));
     };
 
 const authUserSuccess = (dispatch, navigate) => {
