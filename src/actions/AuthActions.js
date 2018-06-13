@@ -26,11 +26,13 @@ export const registerUser = ({ name, email, password, navigate }) =>
         dispatch({ type: WAITING_LOGIN });
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(currentUser => {
-                currentUser.sendEmailVerification().then(user => {
-                const emailB64 = b64.encode(email);
+                const user = firebase.auth().currentUser;
+                user.sendEmailVerification().then(user => {
+                    console.log('email enviado...');
+                    const emailB64 = b64.encode(email);
                 
-                firebase.database().ref(`/contacts/${emailB64}`).push({ name })
-                    .then(value => registerUserSuccess(dispatch, navigate));
+                    firebase.database().ref(`/contacts/${emailB64}`).push({ name })
+                        .then(value => registerUserSuccess(dispatch, navigate));
             }).catch(err => { console.log(err); }); 
         })
             .catch(err => registerUserFailed(err, dispatch));
@@ -56,8 +58,9 @@ export const authUser = ({ email, password, navigate }) => (dispatch) => {
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then(user => {
             if (user) {
-                user.reload();
-                if (user.emailVerified) {
+                user.user.reload();
+                console.log(user.user.emailVerified);
+                if (user.user.emailVerified) {
                     authUserSuccess(dispatch, navigate);     
                 } else {
                     pendingEmailVerification(dispatch);

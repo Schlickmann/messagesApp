@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, TextInput, 
+        TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import { modifyEmail, modifyPassword, modifyName, registerUser } from '../actions/AuthActions';
 
@@ -120,6 +121,8 @@ const styles = {
         width: screen() - 10,
         borderWidth: 2,
         borderColor: '#ADD8E6', //LightBlue
+        color: '#4682B4',
+        fontFamily: 'Noteworthy',
         borderRadius: 8,
         margin: 10,
         padding: 5, 
@@ -147,7 +150,8 @@ const styles = {
     },
     txtRegister: {
         fontSize: 25,
-        color: '#4682B4', 
+        color: '#4682B4',
+        fontFamily: 'Noteworthy', 
     }
 };
 

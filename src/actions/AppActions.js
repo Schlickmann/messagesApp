@@ -3,7 +3,7 @@ import b64 from 'base-64';
 import _ from 'lodash';
 
 import { MODIFY_EMAIL_NEW_CONTACT, ADD_CONTACT_SUCCESS, 
-        ADD_CONTACT_FAILED, WAITING } from './types';
+        ADD_CONTACT_FAILED, WAITING, LIST_USER_CONTACTS } from './types';
 
 export const modifyEmailNewContact = (text) => ({
     type: MODIFY_EMAIL_NEW_CONTACT,
@@ -70,4 +70,17 @@ export const enableInclusionContact = () => (
         payload: false
     }
 );
+
+export const userContactsFetch = () => {
+    const { currentUser } = firebase.auth();
+
+    return (dispatch) => {
+        const emailUserB64 = b64.encode(currentUser.email);
+
+        firebase.database().ref(`/user_contacts/${emailUserB64}`)
+            .on('value', (snapshot) => {
+                dispatch({ type: LIST_USER_CONTACTS, payload: snapshot.val() });
+            });
+    }
+};
 
