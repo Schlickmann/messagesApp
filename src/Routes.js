@@ -5,6 +5,7 @@ import FormRegister from './components/FormRegister';
 import FormLogin from './components/FormLogin';
 import Welcome from './components/Welcome';
 import Chats from './components/Chats';
+import Chat from './components/Chat';
 import Contacts from './components/Contacts';
 import AddContact from './components/AddContact';
 
@@ -37,6 +38,7 @@ const Routes = StackNavigator({
     register: { screen: FormRegister },
     welcome: { screen: Welcome },
     addContact: { screen: AddContact },
+    chat: { screen: Chat },
     tabPage: { screen: TabPage, }
 }, {
   initialRouteName: 'login',

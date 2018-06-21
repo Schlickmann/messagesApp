@@ -5,7 +5,8 @@ const INITIAL_STATE = {
     emailNewContact: '',
     errorAddContact: '',
     loading: false,
-    registerIncluded: false
+    registerIncluded: false,
+    disabledButton: true
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -13,7 +14,11 @@ export default (state = INITIAL_STATE, action) => {
     console.log(action);
     switch (action.type) {
         case MODIFY_EMAIL_NEW_CONTACT:
-            lRet = { ...state, emailNewContact: action.payload };
+            let disable = false;
+            if (action.payload === '') {
+                disable = true;
+            }
+            lRet = { ...state, emailNewContact: action.payload, disabledButton: disable, errorAddContact: '' };
             break;
         case ADD_CONTACT_FAILED:
             lRet = { ...state, errorAddContact: action.payload, loading: false };

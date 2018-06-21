@@ -73,6 +73,7 @@ class AddContact extends Component {
             <View>
                 <TouchableOpacity
                     onPress={() => this._addContact()}
+                    disabled={this.props.disabledButton}
                 >
                     <View style={styles.btnLogin}>
                         <Text style={styles.txtLogin}>Add</Text>
@@ -154,7 +155,8 @@ const mapStateToProps = state => (
         emailNewContact: state.ReducerApp.emailNewContact,
         errorAddContact: state.ReducerApp.errorAddContact,
         loading: state.ReducerApp.loading,
-        registerIncluded: state.ReducerApp.registerIncluded
+        registerIncluded: state.ReducerApp.registerIncluded,
+        disabledButton: state.ReducerApp.disabledButton
     }
 );
 

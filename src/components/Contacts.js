@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image, ListView } from 'react-native';
+import { View, Text, TouchableOpacity, TouchableHighlight,
+          Image, ListView } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -40,19 +41,25 @@ class Contacts extends Component {
       this.data = ds.cloneWithRows(contacts);
     }
 
+    _renderRow(contact) {
+      const { navigate } = this.props.navigation;
+      return (
+        <TouchableHighlight onPress={() => { navigate('chat'); }} underlayColor="#fff" >
+          <View style={{ flex: 1, padding: 15, borderBottomWidth: 1, borderColor: '#CCC' }}>
+            <Text style={{ fontSize: 16, fontWeight: 'bold', fontFamily: 'Verdana' }}>{contact.name}</Text>
+            <Text style={{ fontSize: 14, fontFamily: 'Verdana' }}>{contact.email}</Text>
+          </View>
+        </TouchableHighlight>
+      );
+    }
+
     _listUserContacts() {
-      if (this.data) {
+      if (this.data._cachedRowCount > 0) {
         return (
           <ListView
             enableEmptySections
             dataSource={this.data}
-            renderRow={data => (
-                  <View style={{ margin: 5 }}>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', fontFamily: 'Verdana' }}>{data.name}</Text>
-                    <Text>{data.email}</Text>
-                  </View>
-                )
-              }
+            renderRow={data => this._renderRow(data)}
           />
         );
       }
