@@ -3,7 +3,8 @@ import b64 from 'base-64';
 import _ from 'lodash';
 
 import { MODIFY_EMAIL_NEW_CONTACT, ADD_CONTACT_SUCCESS, 
-        ADD_CONTACT_FAILED, WAITING, LIST_USER_CONTACTS } from './types';
+        ADD_CONTACT_FAILED, WAITING, LIST_USER_CONTACTS,
+        MODIFY_MESSAGE_CHAT } from './types';
 
 export const modifyEmailNewContact = (text) => ({
     type: MODIFY_EMAIL_NEW_CONTACT,
@@ -81,6 +82,10 @@ export const userContactsFetch = () => {
             .on('value', (snapshot) => {
                 dispatch({ type: LIST_USER_CONTACTS, payload: snapshot.val() });
             });
-    }
+    };
 };
 
+export const modifyMessageChat = (text) => ({
+    type: MODIFY_MESSAGE_CHAT,
+    payload: text
+});

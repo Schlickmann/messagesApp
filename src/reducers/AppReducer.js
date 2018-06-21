@@ -1,12 +1,13 @@
 import { MODIFY_EMAIL_NEW_CONTACT, ADD_CONTACT_FAILED, 
-        ADD_CONTACT_SUCCESS, WAITING } from '../actions/types';
+        ADD_CONTACT_SUCCESS, WAITING, MODIFY_MESSAGE_CHAT } from '../actions/types';
 
 const INITIAL_STATE = {
     emailNewContact: '',
     errorAddContact: '',
     loading: false,
     registerIncluded: false,
-    disabledButton: true
+    disabledButton: true,
+    message: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -28,6 +29,9 @@ export default (state = INITIAL_STATE, action) => {
             break;
         case WAITING:
             lRet = { ...state, loading: true };
+            break;
+        case MODIFY_MESSAGE_CHAT:
+            lRet = { ...state, message: action.payload };
             break;
         default:
             lRet = state;

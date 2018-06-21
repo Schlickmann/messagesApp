@@ -12,3 +12,4 @@ export const ADD_CONTACT_SUCCESS = 'add_contact_success';
 export const ADD_CONTACT_FAILED = 'add_contact_failed';
 export const WAITING = 'waiting';
 export const LIST_USER_CONTACTS = 'list_user_contacts';
+export const MODIFY_MESSAGE_CHAT = 'modify_message_chat';

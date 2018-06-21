@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, Image, TouchableHighlight } from 'react-native';
+import { connect } from 'react-redux';
+import { modifyMessageChat } from '../actions/AppActions';
 
 class Chat extends Component {
     static navigationOptions = ({ navigation }) => ({
@@ -20,6 +22,8 @@ class Chat extends Component {
                 <View style={styles.mainText}>
                     <TextInput 
                         style={styles.textInput}
+                        value={this.props.message}
+                        onChangeText={message => this.props.modifyMessageChat(message)}
                     />
                     <View style={styles.mainBtn}>
                         <TouchableHighlight
@@ -66,5 +70,10 @@ const styles = {
     },
 };
 
+const mapStateToProps = state => {
+    return ({
+        message: state.ReducerApp.message,
+    });
+};
 
-export default Chat;
+export default connect(mapStateToProps, {modifyMessageChat})(Chat);
