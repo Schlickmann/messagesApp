@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, Image, TouchableHighlight } from 'react-native';
+import { View, TextInput, Image, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import { modifyMessageChat } from '../actions/AppActions';
 
@@ -18,7 +18,7 @@ class Chat extends Component {
     render() {
         return (
             <View style={styles.mainView}>
-                <View style={styles.mainChat}></View>
+                <View style={styles.mainChat} />
                 <View style={styles.mainText}>
                     <TextInput 
                         style={styles.textInput}
@@ -70,10 +70,8 @@ const styles = {
     },
 };
 
-const mapStateToProps = state => {
-    return ({
-        message: state.ReducerApp.message,
-    });
-};
+const mapStateToProps = state => ({
+    message: state.ReducerApp.message,
+});
 
-export default connect(mapStateToProps, {modifyMessageChat})(Chat);
+export default connect(mapStateToProps, { modifyMessageChat })(Chat);
