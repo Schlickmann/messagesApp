@@ -44,7 +44,7 @@ class Contacts extends Component {
     _renderRow(contact) {
       const { navigate } = this.props.navigation;
       return (
-        <TouchableHighlight onPress={() => { navigate('chat'); }} underlayColor="#fff" >
+        <TouchableHighlight onPress={() => { navigate('chat', { contactName: contact.name, contactEmail: contact.email }); }} underlayColor="#fff" >
           <View style={{ flex: 1, padding: 15, borderBottomWidth: 1, borderColor: '#CCC' }}>
             <Text style={{ fontSize: 16, fontWeight: 'bold', fontFamily: 'Verdana' }}>{contact.name}</Text>
             <Text style={{ fontSize: 14, fontFamily: 'Verdana' }}>{contact.email}</Text>

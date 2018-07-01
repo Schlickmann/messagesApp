@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { View, TextInput, Image, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
-import { modifyMessageChat } from '../actions/AppActions';
+import { modifyMessageChat, sendMessage } from '../actions/AppActions';
 
 class Chat extends Component {
     static navigationOptions = ({ navigation }) => ({
-        headerTitle: typeof (navigation.state.params) === 'undefined' || typeof (navigation.state.params.title) === 'undefined' ? 'find' : navigation.state.params.title,
+        headerTitle: navigation.state.params.contactName,
         headerTintColor: '#ADD8E6',
-        headerTitleStyle: { fontSize: 25, color: '#ADD8E6', fontFamily: 'Noteworthy' },
+        headerTitleStyle: { fontSize: 20, color: '#ADD8E6', fontFamily: 'Noteworthy' },
         headerStyle: { height: 60, backgroundColor: '#4682B4', }
     });
 
-    componentWillMount() {
-        this.props.navigation.setParams({ title: 'your content' });
+    _sendMessage() {
+        const { contactName, contactEmail } = this.props.navigation.state.params;
+        
+        this.props.sendMessage(this.props.message, contactName, contactEmail);
     }
 
     render() {
@@ -27,7 +29,7 @@ class Chat extends Component {
                     />
                     <View style={styles.mainBtn}>
                         <TouchableHighlight
-                            onPress={() => { false; }}
+                            onPress={this._sendMessage.bind(this)}
                             underlayColor="#fff"
                         >
                             <Image style={styles.btnSend} source={require('../images/send.png')} />
@@ -74,4 +76,4 @@ const mapStateToProps = state => ({
     message: state.ReducerApp.message,
 });
 
-export default connect(mapStateToProps, { modifyMessageChat })(Chat);
+export default connect(mapStateToProps, { modifyMessageChat, sendMessage })(Chat);
