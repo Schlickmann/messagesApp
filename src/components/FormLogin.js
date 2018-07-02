@@ -57,7 +57,8 @@ class FormLogin extends Component {
                         <Text style={styles.txtHeader}>Messages App</Text>      
                     </View>
                     <View style={styles.inputView}>
-                        <TextInput 
+                        <TextInput
+                            keyboardType='email-address' 
                             style={styles.input}
                             placeholder='Email...'
                             placeholderTextColor='#ADD8E6' 

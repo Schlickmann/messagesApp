@@ -67,6 +67,7 @@ class FormRegister extends Component {
                 />
                 <Text style={styles.txtInput}>Email:</Text>
                 <TextInput
+                    keyboardType='email-address' 
                     value={this.props.email}
                     onChangeText={(text) => { this.props.modifyEmail(text); }} 
                     style={styles.input}

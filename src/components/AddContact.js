@@ -35,6 +35,7 @@ class AddContact extends Component {
                     <View style={styles.inputView}>
                         <Text style={styles.txtInput}>Email:</Text>
                         <TextInput
+                            keyboardType='email-address' 
                             onChangeText={text => { this.props.modifyEmailNewContact(text); }} 
                             value={this.props.emailNewContact} 
                             style={styles.input} 
