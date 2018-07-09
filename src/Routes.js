@@ -8,12 +8,14 @@ import Chats from './components/Chats';
 import Chat from './components/Chat';
 import Contacts from './components/Contacts';
 import AddContact from './components/AddContact';
+import Profile from './components/Profile';
 
 const TabPage = TabNavigator({
   chatsPage: { screen: Chats },
-  contactsPage: { screen: Contacts }
+  contactsPage: { screen: Contacts },
+  profile: { screen: Profile }
 }, {
-  tabBarPosition: 'top',
+  tabBarPosition: 'bottom',
   swipeEnabled: true,
   tabBarOptions: {
     activeTintColor: '#ADD8E6',
@@ -28,7 +30,6 @@ const TabPage = TabNavigator({
     style: {
       borderTopWidth: 0,
       elevation: 4,
-      marginBottom: 2,
     }
   },
 });

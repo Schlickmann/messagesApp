@@ -4,7 +4,8 @@ import _ from 'lodash';
 
 import { MODIFY_EMAIL_NEW_CONTACT, ADD_CONTACT_SUCCESS, 
         ADD_CONTACT_FAILED, WAITING, LIST_USER_CONTACTS,
-        MODIFY_MESSAGE_CHAT, SEND_MESSAGE, LIST_USER_CHATS } from './types';
+        MODIFY_MESSAGE_CHAT, SEND_MESSAGE, LIST_USER_CHATS,
+        LIST_ALL_USER_CHATS } from './types';
 
 export const modifyEmailNewContact = (text) => ({
     type: MODIFY_EMAIL_NEW_CONTACT,
@@ -16,7 +17,7 @@ export const addContact = ({ emailNewContact, navigate }) =>
     (dispatch) => {
         dispatch({ type: WAITING });
         const emailB64 = b64.encode(emailNewContact);
-        firebase.database().ref(`/contacts/${emailB64}`) //CRIA
+        firebase.database().ref(`/contacts/${emailB64}`)
             .once('value')
             .then(snapshot => {
                 if (snapshot.val()) {
@@ -131,5 +132,19 @@ export const fetchUserChat = (contactEmail) => {
                 dispatch({ type: LIST_USER_CHATS, payload: snapshot.val() });
             });
     };
+};
+
+export const fetchOldChats = () => {
+    const { currentUser } = firebase.auth();
+    
+        return (dispatch) => {
+            const emailUserB64 = b64.encode(currentUser.email);
+    
+            firebase.database().ref(`/chats_user/${emailUserB64}`)
+                .on('value', (snapshot) => {
+                    console.log(snapshot);
+                    dispatch({ type: LIST_ALL_USER_CHATS, payload: snapshot.val() });
+                });
+        }; 
 };
 

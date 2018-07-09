@@ -8,20 +8,13 @@ import { enableInclusionContact, userContactsFetch } from '../actions/AppActions
 
 class Contacts extends Component {
 
-  static navigationOptions = () => ({
+  static navigationOptions = ({ navigation }) => ({
       headerTitle: 'Messages App',
       headerTintColor: '#ADD8E6',
       headerTitleStyle: { fontSize: 25, color: '#ADD8E6', fontFamily: 'Noteworthy', },
       headerStyle: { height: 60, },
-      headerLeft: null,
       tabBarLabel: 'Contacts',
-      headerRight: (
-          <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, }}>
-            <TouchableOpacity onPress={() => false}>
-              <Text style={{ color: '#ADD8E6', fontFamily: 'Noteworthy', fontSize: 16, }}>Sair</Text>
-            </TouchableOpacity>
-          </View>
-      )
+      headerLeft: null
     });
 
     componentWillMount() {

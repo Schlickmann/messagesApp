@@ -15,3 +15,6 @@ export const LIST_USER_CONTACTS = 'list_user_contacts';
 export const MODIFY_MESSAGE_CHAT = 'modify_message_chat';
 export const SEND_MESSAGE = 'send_message';
 export const LIST_USER_CHATS = 'list_user_chats';
+export const LIST_ALL_USER_CHATS = 'list_all_user_chats';
+export const USER_LOUGOUT = 'user_logout';
+export const USER_LOGOUT_FAILED = 'user_logout_failed';

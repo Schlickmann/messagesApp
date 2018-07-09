@@ -1,9 +1,10 @@
 import firebase from 'firebase';
 import b64 from 'base-64';
+import _ from 'lodash';
 import { MODIFY_EMAIL, MODIFY_PASSWORD, MODIFY_NAME, 
         REGISTER_USER_SUCCESS, REGISTER_USER_FAILED, 
         AUTH_USER_SUCCESS, AUTH_USER_FAILED, WAITING_LOGIN,
-        PENDING_EMAIL_VERIFICATION } from './types';
+        PENDING_EMAIL_VERIFICATION, USER_LOUGOUT, USER_LOGOUT_FAILED } from './types';
 
 export const modifyEmail = (text) => ({
         type: MODIFY_EMAIL,
@@ -55,13 +56,18 @@ const registerUserFailed = (error, dispatch) => {
 
 export const authUser = ({ email, password, navigate }) => (dispatch) => {
     dispatch({ type: WAITING_LOGIN });
+    const emailUserB64 = b64.encode(email);
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then(user => {
             if (user) {
                 user.user.reload();
-                console.log(user.user.emailVerified);
                 if (user.user.emailVerified) {
-                    authUserSuccess(dispatch, navigate);     
+                    firebase.database().ref(`/contacts/${emailUserB64}`)
+                    .once('value')
+                    .then(snapshot => {
+                        const userData = _.first(_.values(snapshot.val()));
+                        authUserSuccess(dispatch, navigate, userData.name); 
+                    });    
                 } else {
                     pendingEmailVerification(dispatch);
                 }
@@ -70,12 +76,12 @@ export const authUser = ({ email, password, navigate }) => (dispatch) => {
         .catch(err => authUserFailed(dispatch, err));
     };
 
-const authUserSuccess = (dispatch, navigate) => {
+const authUserSuccess = (dispatch, navigate, userName) => {
     dispatch({
         type: AUTH_USER_SUCCESS
     });
 
-    navigate('tabPage');
+    navigate('tabPage', { userName });
 };
 
 const authUserFailed = (dispatch, erro) => {
@@ -90,5 +96,42 @@ const pendingEmailVerification = (dispatch) => {
         type: PENDING_EMAIL_VERIFICATION,
         payload: 'The email entered in the registration has not yet been validated.'
                     + 'Please check your email box.'
+    });
+};
+
+export const userLogOut = ({ navigate }) => (dispatch) => {
+    dispatch({ type: WAITING_LOGIN });
+    firebase.auth().signOut()
+        .then(() => {
+            // Sign-out successful.
+            navigate('login');
+            dispatch({ type: USER_LOUGOUT });
+        })
+        .catch(err => userLogOutFailed(dispatch, err));
+};
+
+const userLogOutFailed = (dispatch, erro) => {
+    dispatch({
+        type: USER_LOGOUT_FAILED,
+        payload: erro.message
+    });
+};
+
+export const updateUserData = ({ imageUrl }) => (dispatch) => {
+    const { currentUser } = firebase.auth();
+
+    const emailUserB64 = b64.encode(currentUser.email);
+
+    firebase.database().ref(`/contacts/${emailUserB64}`)
+    .once('value')
+    .then(snapshot => {
+        if (snapshot.val()) {
+            const userData = _.first(_.values(snapshot.val())); 
+            firebase.database().ref(`/contacts/${emailUserB64}`)
+            .set({
+                name: userData.name,
+                profilePic: imageUrl
+            });
+        }
     });
 };
