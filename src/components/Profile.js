@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, Dimensions, ActivityIndicator,
         TouchableOpacity, Image, PixelRatio } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
+
 import { connect } from 'react-redux';
-import { userLogOut, updateUserData } from '../actions/AuthActions';
+import { userLogOut, selectPhotoTapped, fetchAvatar } from '../actions/AuthActions';
 
 const screenW = Dimensions.get('screen').width;
 const screenH = Dimensions.get('screen').height;
@@ -15,14 +15,6 @@ function screen() {
         return screenH;
 }
 
-const options = {
-    title: 'Select Avatar',
-    storageOptions: {
-      skipBackup: true,
-      path: 'images'
-    }
-  };
-
 class Profile extends Component {
     static navigationOptions = ({ navigation }) => ({
         headerTitle: navigation.state.params.userName,
@@ -31,37 +23,13 @@ class Profile extends Component {
         tabBarLabel: 'Profile',
         headerLeft: null
     });
-    state = {
-        
-        avatarSource: null,
-           
-    };
-         
-    selectPhotoTapped() {
-        ImagePicker.showImagePicker(options, (response) => {
-            console.log('Response = ', response);
-            
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else {
-                const source = { uri: response.uri };
-            
-                // You can also display the image using data:
-                // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-            
-                this.setState({
-                    avatarSource: source
-                });
-            }
-        });
+
+    componentWillMount() {
+        this.props.fetchAvatar();
     }
 
-    _updateUserData() {
-        this.selectPhotoTapped();
-
-        //this.props.updateUserData();
+    async _updateUserData() {
+        const picture = await this.props.selectPhotoTapped();
     }
 
     _userLogOut() {
@@ -97,8 +65,8 @@ class Profile extends Component {
                     <TouchableOpacity onPress={() => { this._updateUserData(); }}>
                     <View style={styles.ImageContainer}>
  
-                        { this.state.avatarSource === null ? <Text>Select your Avatar</Text> :
-                        <Image style={styles.ImageContainer} source={this.state.avatarSource} />
+                        { this.props.avatarSource === null ? <Text>Select your Avatar</Text> :
+                        <Image style={styles.ImageContainer} source={this.props.avatarSource} />
                         }   
         
                     </View>     
@@ -166,8 +134,9 @@ const styles = {
 const mapStateToProps = state => (
     {
         errorAuth: state.Auth.errorAuth,
-        loadingLogin: state.Auth.loadingLogin
+        loadingLogin: state.Auth.loadingLogin,
+        avatarSource: state.Auth.avatarSource
     }
 );
 
-export default connect(mapStateToProps, { userLogOut, updateUserData })(Profile);
+export default connect(mapStateToProps, { userLogOut, selectPhotoTapped, fetchAvatar })(Profile);

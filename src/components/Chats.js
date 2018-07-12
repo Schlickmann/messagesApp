@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, TouchableHighlight, ListView } from 'react-native';
+import { View, Text, TouchableHighlight, ListView } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import { fetchOldChats } from '../actions/AppActions';
-import { userLogOut } from '../actions/AuthActions';
 
 class Chats extends Component {
     static navigationOptions = ({ navigation }) => ({
@@ -22,12 +21,6 @@ class Chats extends Component {
 
     componentWillReceiveProps(nextProps) {
       this.createDataSource(nextProps.contacts);      
-    }
-
-    _logOut() {
-      const { navigate } = this.props.navigation;
-
-      this.props.userLogOut(navigate);
     }
 
     createDataSource(contacts) {
@@ -82,4 +75,4 @@ const mapStateToProps = state => {
   return { contacts };
 };
 
-export default connect(mapStateToProps, { fetchOldChats, userLogOut })(Chats);
+export default connect(mapStateToProps, { fetchOldChats })(Chats);

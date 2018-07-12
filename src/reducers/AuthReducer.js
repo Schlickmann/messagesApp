@@ -1,7 +1,8 @@
 import { MODIFY_EMAIL, MODIFY_PASSWORD, MODIFY_NAME, 
     REGISTER_USER_SUCCESS, REGISTER_USER_FAILED, 
     AUTH_USER_SUCCESS, AUTH_USER_FAILED, WAITING_LOGIN,
-    PENDING_EMAIL_VERIFICATION, USER_LOUGOUT, USER_LOGOUT_FAILED } from '../actions/types';
+    PENDING_EMAIL_VERIFICATION, USER_LOUGOUT, USER_LOGOUT_FAILED,
+    UPDATING_AVATAR } from '../actions/types';
 
 const INITIAL_STATE = {
     name: '',
@@ -10,6 +11,7 @@ const INITIAL_STATE = {
     errorRegister: '',
     errorAuth: '',
     loadingLogin: false,
+    avatarSource: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -47,7 +49,10 @@ export default (state = INITIAL_STATE, action) => {
             break; 
         case USER_LOGOUT_FAILED:
             lRet = { ...state, loadingLogin: false, errorAuth: action.payload };
-            break;         
+            break;  
+        case UPDATING_AVATAR:
+            lRet = { ...state, avatarSource: action.payload };
+            break;       
         default:
             lRet = { ...state };
             break;

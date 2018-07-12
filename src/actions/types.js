@@ -18,3 +18,4 @@ export const LIST_USER_CHATS = 'list_user_chats';
 export const LIST_ALL_USER_CHATS = 'list_all_user_chats';
 export const USER_LOUGOUT = 'user_logout';
 export const USER_LOGOUT_FAILED = 'user_logout_failed';
+export const UPDATING_AVATAR = 'updating_avatar';

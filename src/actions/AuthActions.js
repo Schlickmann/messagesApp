@@ -1,10 +1,14 @@
+import ImagePicker from 'react-native-image-picker';
+import { Platform } from 'react-native';
+import RNFetchBlob from 'react-native-fetch-blob';
 import firebase from 'firebase';
 import b64 from 'base-64';
 import _ from 'lodash';
 import { MODIFY_EMAIL, MODIFY_PASSWORD, MODIFY_NAME, 
         REGISTER_USER_SUCCESS, REGISTER_USER_FAILED, 
         AUTH_USER_SUCCESS, AUTH_USER_FAILED, WAITING_LOGIN,
-        PENDING_EMAIL_VERIFICATION, USER_LOUGOUT, USER_LOGOUT_FAILED } from './types';
+        PENDING_EMAIL_VERIFICATION, USER_LOUGOUT, USER_LOGOUT_FAILED,
+        UPDATING_AVATAR } from './types';
 
 export const modifyEmail = (text) => ({
         type: MODIFY_EMAIL,
@@ -66,7 +70,7 @@ export const authUser = ({ email, password, navigate }) => (dispatch) => {
                     .once('value')
                     .then(snapshot => {
                         const userData = _.first(_.values(snapshot.val()));
-                        authUserSuccess(dispatch, navigate, userData.name); 
+                        authUserSuccess(dispatch, navigate, userData); 
                     });    
                 } else {
                     pendingEmailVerification(dispatch);
@@ -80,7 +84,6 @@ const authUserSuccess = (dispatch, navigate, userName) => {
     dispatch({
         type: AUTH_USER_SUCCESS
     });
-
     navigate('tabPage', { userName });
 };
 
@@ -117,7 +120,68 @@ const userLogOutFailed = (dispatch, erro) => {
     });
 };
 
-export const updateUserData = ({ imageUrl }) => (dispatch) => {
+const options = {
+    title: 'Select your Avatar',
+    cameraType: 'front',
+    mediaType: 'photo',
+    storageOptions: {
+      skipBackup: true,
+      path: 'messagesApp/images',
+      cameraRoll: true,
+      waitUntilSaved: true,
+    }
+};
+
+const Blob = RNFetchBlob.polyfill.Blob;
+const fs = RNFetchBlob.fs;
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+window.Blob = Blob;
+
+const uploadImage = (uri, imageName, mime = 'image/jpg') => dispatch => {
+      const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+        let uploadBlob = null;
+        const imageRef = firebase.storage().ref('profile').child(imageName);
+        fs.readFile(uploadUri, 'base64')
+        .then((data) => Blob.build(data, { type: `${mime};BASE64` }))
+        .then((blob) => {
+          uploadBlob = blob;
+          return imageRef.put(blob, { contentType: mime });
+        })
+        .then(() => {
+          uploadBlob.close();
+          return imageRef.getDownloadURL();
+        })
+        .then((url) => {
+          dispatch(updateUserData(url));
+        })
+        .catch((error) => { console.log(error); });
+};
+
+export const selectPhotoTapped = () => (dispatch) => {
+    ImagePicker.showImagePicker(options, (response) => {
+        console.log('Response = ', response);
+        
+        if (response.didCancel) {
+            console.log('User cancelled image picker');
+        } else if (response.error) {
+            console.log('ImagePicker Error: ', response.error);
+        } else {
+            const source = { uri: response.uri };
+        
+            // You can also display the image using data:
+            // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+            dispatch({
+                type: UPDATING_AVATAR,
+                payload: source
+            });
+
+            const namePicture = `${response.fileName}-${response.timestamp}`;
+            dispatch(uploadImage(response.uri, namePicture));
+        }
+    });
+};
+
+export const updateUserData = (url) => (dispatch) => {
     const { currentUser } = firebase.auth();
 
     const emailUserB64 = b64.encode(currentUser.email);
@@ -126,12 +190,28 @@ export const updateUserData = ({ imageUrl }) => (dispatch) => {
     .once('value')
     .then(snapshot => {
         if (snapshot.val()) {
-            const userData = _.first(_.values(snapshot.val())); 
+            const userData = _.first(_.values(snapshot.val()));
+
             firebase.database().ref(`/contacts/${emailUserB64}`)
             .set({
                 name: userData.name,
-                profilePic: imageUrl
+                profilePic: url
             });
         }
     });
+};
+
+export const fetchAvatar = () => {
+    const { currentUser } = firebase.auth();
+
+    return (dispatch) => {
+        const emailUserB64 = b64.encode(currentUser.email);
+
+        firebase.database().ref(`/contacts/${emailUserB64}`)
+            .on('value', (snapshot) => {
+                const source = { uri: snapshot.val().profilePic };
+
+                dispatch({ type: UPDATING_AVATAR, payload: source });
+            });
+    };
 };
