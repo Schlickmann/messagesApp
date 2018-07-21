@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, Image, TouchableHighlight, ListView } from 'react-native';
+import { View, Text, TextInput, Image, TouchableHighlight, ListView, PixelRatio } from 'react-native';
+import { HeaderBackButton } from 'react-navigation';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { modifyMessageChat, sendMessage, fetchUserChat } from '../actions/AppActions';
 
 class Chat extends Component {
     static navigationOptions = ({ navigation }) => ({
-        headerTitle: navigation.state.params.contactName,
-        headerTintColor: '#ADD8E6',
-        headerTitleStyle: { fontSize: 20, color: '#ADD8E6', fontFamily: 'Noteworthy' },
-        headerStyle: { height: 60, backgroundColor: '#4682B4', }
+        header: (
+            <View style={{ height: 60, backgroundColor: '#4682B4', flexDirection: 'row', padding: 15 }} >
+                <HeaderBackButton onPress={() => navigation.goBack(null)} />
+                { navigation.state.params.profilePic === '' ? <Image style={styles.ImageContainer} source={require('../images/user.png')} /> :
+                    <Image style={styles.ImageContainer} source={{ uri: navigation.state.params.profilePic }} />
+                }  
+              <Text style={{ fontSize: 20, color: '#ADD8E6', fontFamily: 'Noteworthy' }} >{navigation.state.params.contactName}</Text>
+            </View>
+          ),
     });
 
     componentWillMount() {
@@ -125,12 +131,19 @@ const styles = {
         height: 30,
         width: 30,
     },
+    ImageContainer: { 
+        marginRight: 10, 
+        borderRadius: 20, 
+        width: 40, 
+        height: 40, 
+        borderColor: '#4682B4', 
+        borderWidth: 1 / PixelRatio.get(), 
+        backgroundColor: '#4682B4', 
+    }
 };
 
 const mapStateToProps = state => {
-    const chat = _.map(state.ChatsReducer, (val, uid) => {
-        return { ...val, uid };
-    });
+    const chat = _.map(state.ChatsReducer, (val, uid) => ({ ...val, uid }));
 
     return ({
         chat,

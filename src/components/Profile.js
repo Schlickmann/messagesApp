@@ -65,7 +65,7 @@ class Profile extends Component {
                     <TouchableOpacity onPress={() => { this._updateUserData(); }}>
                     <View style={styles.ImageContainer}>
  
-                        { this.props.avatarSource === null ? <Text>Select your Avatar</Text> :
+                        { this.props.avatarSource === null ? <Image style={styles.ImageContainer} source={require('../images/editphoto.png')} /> :
                         <Image style={styles.ImageContainer} source={this.props.avatarSource} />
                         }   
         
@@ -95,8 +95,7 @@ const styles = {
         borderWidth: 1 / PixelRatio.get(),
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#4682B4',
-        
+        backgroundColor: '#4682B4',    
     },
     avatarView: {
         alignItems: 'center',

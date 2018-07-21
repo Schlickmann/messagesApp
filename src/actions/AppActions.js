@@ -23,6 +23,7 @@ export const addContact = ({ emailNewContact, navigate }) =>
                 if (snapshot.val()) {
                     //converte objeto para array (_.values()) e pega o primeiro indice do array (_.first())
                     const userData = _.first(_.values(snapshot.val())); 
+                    const profilePic = snapshot.val().profilePic;
 
                     const { currentUser } = firebase.auth();
                     
@@ -38,7 +39,7 @@ export const addContact = ({ emailNewContact, navigate }) =>
                                 addContactFailed('You already have this contact in your contact list.', dispatch);
                             } else {
                                 firebase.database().ref(`/user_contacts/${emailUserB64}`)
-                                    .push({ email: emailNewContact, name: userData.name })
+                                    .push({ email: emailNewContact, name: userData, profilePic })
                                     .then(() => { addContactSuccess(dispatch, navigate); })
                                     .catch(err => { addContactFailed(err.message, dispatch); });
                             }
@@ -73,19 +74,15 @@ export const enableInclusionContact = () => (
     }
 );
 
-export const userContactsFetch = () => {
-    const { currentUser } = firebase.auth();
-
-    return (dispatch) => {
+export const userContactsFetch = () => (dispatch) => {
+        const { currentUser } = firebase.auth();
         const emailUserB64 = b64.encode(currentUser.email);
 
         firebase.database().ref(`/user_contacts/${emailUserB64}`)
             .on('value', (snapshot) => {
                 dispatch({ type: LIST_USER_CONTACTS, payload: snapshot.val() });
             });
-    };
 };
-
 export const modifyMessageChat = (text) => ({
     type: MODIFY_MESSAGE_CHAT,
     payload: text
@@ -106,8 +103,12 @@ export const sendMessage = (message, contactName, contactEmail) => {
                         .then(() => { dispatch({ type: SEND_MESSAGE, }); });
                 })
                 .then(() => {
-                    firebase.database().ref(`/chats_user/${emailUserB64}/${contactEmailB64}`)
-                        .set({ name: contactName, email: contactEmail });
+                    firebase.database().ref(`/contacts/${contactEmailB64}`)
+                    .once('value')
+                    .then(contact => {
+                        firebase.database().ref(`/chats_user/${emailUserB64}/${contactEmailB64}`)
+                        .set({ name: contactName, email: contactEmail, profilePic: contact.val().profilePic });
+                    }); 
                 })
                 .then(() => {
                     firebase.database().ref(`/contacts/${emailUserB64}`)
@@ -115,7 +116,7 @@ export const sendMessage = (message, contactName, contactEmail) => {
                         .then(snapshot => {
                             const userData = _.first(_.values(snapshot.val()));
                             firebase.database().ref(`/chats_user/${contactEmailB64}/${emailUserB64}`)
-                            .set({ name: userData.name, email: emailUser });
+                            .set({ name: userData, email: emailUser, profilePic: snapshot.val().profilePic });
                         });
                 });
     };
@@ -142,7 +143,6 @@ export const fetchOldChats = () => {
     
             firebase.database().ref(`/chats_user/${emailUserB64}`)
                 .on('value', (snapshot) => {
-                    console.log(snapshot);
                     dispatch({ type: LIST_ALL_USER_CHATS, payload: snapshot.val() });
                 });
         }; 

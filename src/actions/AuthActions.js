@@ -36,7 +36,7 @@ export const registerUser = ({ name, email, password, navigate }) =>
                     console.log('email enviado...');
                     const emailB64 = b64.encode(email);
                 
-                    firebase.database().ref(`/contacts/${emailB64}`).push({ name })
+                    firebase.database().ref(`/contacts/${emailB64}`).set({ name, profilePic: '' })
                         .then(value => registerUserSuccess(dispatch, navigate));
             }).catch(err => { console.log(err); }); 
         })
@@ -70,7 +70,7 @@ export const authUser = ({ email, password, navigate }) => (dispatch) => {
                     .once('value')
                     .then(snapshot => {
                         const userData = _.first(_.values(snapshot.val()));
-                        authUserSuccess(dispatch, navigate, userData); 
+                        authUserSuccess(dispatch, navigate, userData, email); 
                     });    
                 } else {
                     pendingEmailVerification(dispatch);
@@ -80,11 +80,11 @@ export const authUser = ({ email, password, navigate }) => (dispatch) => {
         .catch(err => authUserFailed(dispatch, err));
     };
 
-const authUserSuccess = (dispatch, navigate, userName) => {
+const authUserSuccess = (dispatch, navigate, userName, email) => {
     dispatch({
         type: AUTH_USER_SUCCESS
     });
-    navigate('tabPage', { userName });
+    navigate('tabPage', { userName, email });
 };
 
 const authUserFailed = (dispatch, erro) => {
@@ -174,8 +174,9 @@ export const selectPhotoTapped = () => (dispatch) => {
                 type: UPDATING_AVATAR,
                 payload: source
             });
-
-            const namePicture = `${response.fileName}-${response.timestamp}`;
+            const { currentUser } = firebase.auth();
+            
+            const namePicture = `avatar-${currentUser.email}`;
             dispatch(uploadImage(response.uri, namePicture));
         }
     });
@@ -187,17 +188,8 @@ export const updateUserData = (url) => (dispatch) => {
     const emailUserB64 = b64.encode(currentUser.email);
 
     firebase.database().ref(`/contacts/${emailUserB64}`)
-    .once('value')
-    .then(snapshot => {
-        if (snapshot.val()) {
-            const userData = _.first(_.values(snapshot.val()));
-
-            firebase.database().ref(`/contacts/${emailUserB64}`)
-            .set({
-                name: userData.name,
-                profilePic: url
-            });
-        }
+    .update({
+        profilePic: url
     });
 };
 

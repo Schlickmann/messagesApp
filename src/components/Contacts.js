@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, TouchableHighlight,
-          Image, ListView } from 'react-native';
+          Image, ListView, PixelRatio } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -37,10 +37,17 @@ class Contacts extends Component {
     _renderRow(contact) {
       const { navigate } = this.props.navigation;
       return (
-        <TouchableHighlight onPress={() => { navigate('chat', { contactName: contact.name, contactEmail: contact.email }); }} underlayColor="#fff" >
-          <View style={{ flex: 1, padding: 15, borderBottomWidth: 1, borderColor: '#CCC' }}>
-            <Text style={{ fontSize: 16, fontWeight: 'bold', fontFamily: 'Verdana' }}>{contact.name}</Text>
-            <Text style={{ fontSize: 14, fontFamily: 'Verdana' }}>{contact.email}</Text>
+        <TouchableHighlight onPress={() => { navigate('chat', { contactName: contact.name, contactEmail: contact.email, profilePic: contact.profilePic }); }} underlayColor="#fff" >
+          <View style={{ flex: 1, padding: 15, borderBottomWidth: 1, borderColor: '#CCC', flexDirection: 'row' }}>
+            <View style={{ marginRight: 5 }}>
+              { contact.profilePic === '' ? <Image style={styles.ImageContainer} source={require('../images/user.png')} /> :
+                <Image style={styles.ImageContainer} source={{ uri: contact.profilePic }} />
+              }
+            </View>
+            <View>
+              <Text style={{ fontSize: 16, fontWeight: 'bold', fontFamily: 'Verdana' }}>{contact.name}</Text>
+              <Text style={{ fontSize: 14, fontFamily: 'Verdana' }}>{contact.email}</Text>
+            </View>
           </View>
         </TouchableHighlight>
       );
@@ -80,6 +87,19 @@ class Contacts extends Component {
       }
 }
 
+const styles = {
+  ImageContainer: {
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    borderColor: '#ADD8E6',
+    borderWidth: 1 / PixelRatio.get(),
+    //justifyContent: 'center',
+    //alignItems: 'center',
+    backgroundColor: '#4682B4',
+    
+  },
+};
 
 const mapStateToProps = state => {
   const contacts = _.map(state.ListReducer, (val, uid) => ({ ...val, uid }));

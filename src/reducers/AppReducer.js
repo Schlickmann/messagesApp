@@ -8,7 +8,8 @@ const INITIAL_STATE = {
     loading: false,
     registerIncluded: false,
     disabledButton: true,
-    message: ''
+    message: '',
+    contactAvatar: null
 };
 
 export default (state = INITIAL_STATE, action) => {

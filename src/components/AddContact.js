@@ -118,7 +118,9 @@ const styles = {
         borderColor: '#ADD8E6', //LightBlue
         borderRadius: 8,
         margin: 10,
-        padding: 5, 
+        padding: 5,
+        color: '#4682B4',
+        fontFamily: 'Noteworthy', 
     },
     errorAddContact: {
         color: '#ff0000',
